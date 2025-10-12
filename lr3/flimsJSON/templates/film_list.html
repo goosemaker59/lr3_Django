@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список фильмов</title>
+</head>
+<body>
+    <h1>Фильмы</h1>
+    <h2>Список фильмов</h2>
+    <form method="GET" action="{% url 'index' %}">
+        <button type="submit" class="btn-redir">
+            Вернуться
+        </button>
+    </form>
+</body>
+</html>

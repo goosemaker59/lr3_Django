@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Фильмы</title>
+</head>
+<body>
+    <h1>Фильмы</h1>
+    <h2>Домашняя страница</h2>
+    <form method="POST">
+        {% csrf_token %}
+    </form>
+
+    <form method="GET" action="{% url 'film_add' %}">
+        <button type="submit" class="btn-redir">
+            Добавить фильм
+        </button>
+    </form>
+    <form method="GET" action="{% url 'film_list' %}">
+        <button type="submit" class="btn-redir">
+            Список фильмов
+        </button>
+    </form>
+</body>
+</html>

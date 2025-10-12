@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить фильм</title>
+</head>
+<body>
+    <h1>Фильмы</h1>
+    <h2>Добавить фильм</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ films_form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+    <form method="GET" action="{% url 'index' %}">
+        <button type="submit" class="btn-redir">
+            Вернуться
+        </button>
+    </form>
+</body>
+</html>
