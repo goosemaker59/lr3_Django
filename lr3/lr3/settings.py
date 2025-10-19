@@ -74,9 +74,6 @@ WSGI_APPLICATION = 'lr3.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATA_ROOT = os.path.join(BASE_DIR, 'data_json')
-os.makedirs(DATA_ROOT, exist_ok=True)
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 os.makedirs(MEDIA_ROOT, exist_ok=True)

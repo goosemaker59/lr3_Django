@@ -8,6 +8,23 @@
 <body>
     <h1>Фильмы</h1>
     <h2>Список фильмов</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ file_form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+    <ul>
+        {% for film in films %}
+            <li>
+                {{ film.title }}
+                {{ film.gerne }}
+                {{ film.director }}
+            </li>
+        {% empty %}
+        <li>Файлов нет</li>
+        {% endfor %}
+    </ul>
     <form method="GET" action="{% url 'index' %}">
         <button type="submit" class="btn-redir">
             Вернуться
