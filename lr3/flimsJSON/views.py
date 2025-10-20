@@ -34,8 +34,7 @@ def film_list(request):
     else:
         file_form = FileForm()
 
-
-    films = get_file_metadata()
+    films = get_file_data()
     response = render(request, "film_list.html", {
         "file_form": file_form,
         "films": films
@@ -70,20 +69,28 @@ def save_film_data(data):
 
 def save_file_metadata(filename, original_name, title, size):
     metadata_file = os.path.join(settings.MEDIA_ROOT, 'file_metadata.json')
+
+    # Загружаем существующие метаданные или создаем новый список
     if os.path.exists(metadata_file):
         with open(metadata_file, 'r', encoding='utf-8') as f:
-            metadata = json.load(f)
+            try:
+                metadata = json.load(f)
+            except json.JSONDecodeError:
+                metadata = []
     else:
         metadata = []
 
-        metadata.append({
-            'id': len(metadata) + 1,
-            'filename': filename,
-            'original_name': original_name,
-            'title': title,
-            'size': size,
-            'upload_date': datetime.now().isoformat()
-        })
+    # Добавляем новую запись
+    metadata.append({
+        'id': len(metadata) + 1,
+        'filename': filename,
+        'original_name': original_name,
+        'title': title,
+        'size': size,
+        'upload_date': datetime.now().isoformat()
+    })
+
+    # Перезаписываем файл метаданных
     with open(metadata_file, 'w', encoding='utf-8') as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
@@ -94,3 +101,23 @@ def get_file_metadata():
             return json.load(f)
     return []
 
+def get_file_data():
+    folder_path = settings.MEDIA_ROOT
+    data_list = []
+
+    if not os.path.exists(folder_path):
+        return []
+
+    for filename in os.listdir(folder_path):
+        if filename.endswith('.json') and filename != 'file_metadata.json':
+            file_path = os.path.join(folder_path, filename)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = json.load(f)
+                    if isinstance(content, list):
+                        data_list.extend(content)
+                    else:
+                        data_list.append(content)
+            except (json.JSONDecodeError, OSError):
+                continue
+    return data_list

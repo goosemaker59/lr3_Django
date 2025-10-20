@@ -15,10 +15,9 @@
         <button type="submit">Добавить</button>
     </form>
     <ul>
-        <p>DEBUG: {{ films }}</p>
         {% for film in films %}
+            {{ film.title }}
             <li>
-                {{ film.title }}
                 {{ film.gerne }}
                 {{ film.director }}
             </li>
