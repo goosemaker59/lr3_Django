@@ -81,14 +81,14 @@ def save_file_metadata(filename, original_name, title, size):
         metadata = []
 
     # Добавляем новую запись
-    metadata.append({
-        'id': len(metadata) + 1,
-        'filename': filename,
-        'original_name': original_name,
-        'title': title,
-        'size': size,
-        'upload_date': datetime.now().isoformat()
-    })
+        metadata.append({
+            'id': len(metadata) + 1,
+            'filename': filename,
+            'original_name': original_name,
+            'title': title,
+            'size': size,
+            'upload_date': datetime.now().isoformat()
+        })
 
     # Перезаписываем файл метаданных
     with open(metadata_file, 'w', encoding='utf-8') as f:
