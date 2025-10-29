@@ -16,10 +16,10 @@
     </form>
     <ul>
         {% for film in films %}
-            {{ film.title }}
             <li>
-                {{ film.gerne }}
-                {{ film.director }}
+                <strong>Фильм:</strong>{{ film.title }} <br>
+                Жанр: {{ film.gerne }} <br>
+                Режиссёр: {{ film.director }}
             </li>
         {% empty %}
         <li>Файлов нет</li>
