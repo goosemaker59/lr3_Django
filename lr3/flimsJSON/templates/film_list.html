@@ -8,6 +8,9 @@
 <body>
     <h1>Фильмы</h1>
     <h2>Список фильмов</h2>
+    {% if error_message %}
+        <div style="color: red;">{{ error_message }}</div>
+    {% endif %}
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}

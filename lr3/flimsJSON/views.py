@@ -6,12 +6,24 @@ import os
 import json
 import uuid
 
+FILM_REQUIRED_KEYS = ["title", "gerne", "director"]
+#Проверка на корректность структуры
+def validate_film_structure(js):
+    def check_entry(entry):
+        return all(k in entry for k in FILM_REQUIRED_KEYS)
+    if isinstance(js, list):
+        return all(check_entry(item) for item in js)
+    if isinstance(js, dict):
+        return check_entry(js)
+    return False
+
 def index(request):
     response = render(request, "index.html", {})
     return response
 def film_list(request):
     if request.method == 'POST':
         file_form = FileForm(request.POST, request.FILES)
+        error_message = None
         if file_form.is_valid():
             title = file_form.cleaned_data['title']
             uploaded_file = file_form.cleaned_data['file']
@@ -23,21 +35,35 @@ def film_list(request):
             with open(file_path, 'wb+') as dest:
                 for chunk in uploaded_file.chunks():
                     dest.write(chunk)
-                    # Сохраняем метаданные в JSON
-            save_file_metadata(
-                filename=unique_name,
-                original_name=uploaded_file.name,
-                title=title,
-                size=uploaded_file.size
-            )
-            return redirect('film_list')
+            # ВАЛИДАЦИЯ JSON + СТРУКТУРЫ
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    jsdata = json.load(f)
+                if not validate_film_structure(jsdata):
+                    raise ValueError('invalid structure')
+            except Exception:
+                os.remove(file_path)
+                error_message = 'Файл повреждён, не является корректным JSON или структура не совпадает.'
+            else:
+                # Сохраняем метаданные в JSON
+                save_file_metadata(
+                    filename=unique_name,
+                    original_name=uploaded_file.name,
+                    title=title,
+                    size=uploaded_file.size
+                )
+                return redirect('film_list')
+        else:
+            error_message = 'Ошибка загрузки файла.'
     else:
         file_form = FileForm()
+        error_message = None
 
     films = get_file_data()
     response = render(request, "film_list.html", {
         "file_form": file_form,
-        "films": films
+        "films": films,
+        "error_message": error_message
     })
     return response
 def film_add(request):
@@ -61,15 +87,18 @@ def save_film_data(data):
             json.dump([], f)
 
     with open(file_path, 'r+') as f:
-        films = json.load(f)
+        try:
+            films = json.load(f)
+        except json.JSONDecodeError:
+            films = []
         films.append(data)
         f.seek(0)
         json.dump(films, f, ensure_ascii=False, indent=4)
+        f.truncate()
 
 
 def save_file_metadata(filename, original_name, title, size):
     metadata_file = os.path.join(settings.MEDIA_ROOT, 'file_metadata.json')
-
     # Загружаем существующие метаданные или создаем новый список
     if os.path.exists(metadata_file):
         with open(metadata_file, 'r', encoding='utf-8') as f:
@@ -81,14 +110,14 @@ def save_file_metadata(filename, original_name, title, size):
         metadata = []
 
     # Добавляем новую запись
-        metadata.append({
-            'id': len(metadata) + 1,
-            'filename': filename,
-            'original_name': original_name,
-            'title': title,
-            'size': size,
-            'upload_date': datetime.now().isoformat()
-        })
+    metadata.append({
+        'id': len(metadata) + 1,
+        'filename': filename,
+        'original_name': original_name,
+        'title': title,
+        'size': size,
+        'upload_date': datetime.now().isoformat()
+    })
 
     # Перезаписываем файл метаданных
     with open(metadata_file, 'w', encoding='utf-8') as f:
