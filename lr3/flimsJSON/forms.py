@@ -4,6 +4,7 @@ class FilmsForm(forms.Form):
     title = forms.CharField(max_length=100, label="Название фильма")
     gerne = forms.CharField(max_length=30, label="Жанр")
     director = forms.CharField(max_length= 100, label="Режиссёр")
+    country = forms.CharField(max_length=50, label="Страна производства")
 
 class FileForm(forms.Form):
     title = forms.CharField(max_length=100, label="Название файла")

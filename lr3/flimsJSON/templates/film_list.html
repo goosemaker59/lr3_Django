@@ -20,9 +20,10 @@
     <ul>
         {% for film in films %}
             <li>
-                <strong>Фильм:</strong>{{ film.title }} <br>
+                <strong>Фильм: </strong>{{ film.title }} <br>
                 Жанр: {{ film.gerne }} <br>
-                Режиссёр: {{ film.director }}
+                Режиссёр: {{ film.director }} <br>
+                Страна: {{ film.country }}
             </li>
         {% empty %}
         <li>Файлов нет</li>

@@ -6,8 +6,8 @@ import os
 import json
 import uuid
 
-FILM_REQUIRED_KEYS = ["title", "gerne", "director"]
-#Проверка на корректность структуры
+FILM_REQUIRED_KEYS = ["title", "gerne", "director", "country"]
+# Проверка на корректность структуры
 def validate_film_structure(js):
     def check_entry(entry):
         return all(k in entry for k in FILM_REQUIRED_KEYS)
@@ -136,7 +136,7 @@ def get_file_data():
 
     if not os.path.exists(folder_path):
         return []
-
+    # Получаем информацию из JSON файлов для вывода
     for filename in os.listdir(folder_path):
         if filename.endswith('.json') and filename != 'file_metadata.json':
             file_path = os.path.join(folder_path, filename)
